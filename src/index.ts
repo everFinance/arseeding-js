@@ -15,7 +15,7 @@ export const genAPI = async (windowEthereum: never): Promise<any> => {
   const signer = await currencyConfig.getSigner()
 
   return {
-    async sendAndPay (arseedingUrl: string, data: Buffer, tokenSymbol: string) {
+    async sendAndPay (arseedingUrl: string, data: Buffer, tokenSymbol: string, debug?: boolean) {
       // 组装 data 成 bundle Item 并使用 signer 进行 item sign
       const dataItem = createData(
         data,
@@ -30,21 +30,34 @@ export const genAPI = async (windowEthereum: never): Promise<any> => {
         headers: { 'Content-Type': 'application/octet-stream' },
         maxBodyLength: Infinity
       })
-      const { fee, decimals, currency, bundler } = res.data
+      const order = res.data
+      const { fee, decimals, currency, bundler } = order
+      if (+fee > 0) {
+        const accounts = await provider.listAccounts()
+        const account = accounts[0] ?? ''
+        const everpay = new Everpay({
+          debug: debug,
+          account: account,
+          ethConnectedSigner: provider.getSigner(),
+          chainType: 'ethereum' as any
+        })
 
-      const accounts = await provider.listAccounts()
-      const account = accounts[0] ?? ''
-      const everpay = new Everpay({
-        account: account,
-        ethConnectedSigner: provider.getSigner(),
-        chainType: 'ethereum' as any
-      })
+        const result = await everpay.transfer({
+          amount: new BigNumber(fee).dividedBy(new BigNumber(10).pow(decimals)).toString(),
+          symbol: currency,
+          to: bundler,
+          data: order
+        })
 
-      await everpay.transfer({
-        amount: new BigNumber(fee).dividedBy(new BigNumber(10).pow(decimals)).toString(),
-        symbol: currency,
-        to: bundler
-      })
+        return {
+          ...result,
+          order
+        }
+      } else {
+        return {
+          order
+        }
+      }
     }
   }
 }
