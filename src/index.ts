@@ -1,9 +1,8 @@
-import getCurrency from '@bundlr-network/client/build/web/currencies'
+import getCurrency from 'bundlr-arseeding-client/build/web/currencies'
 import { providers } from 'ethers'
 import Everpay from 'everpay'
-import { createData } from 'arseeding-arbundles'
+import { createData, DataItemCreateOptions } from 'arseeding-arbundles'
 import BigNumber from 'bignumber.js'
-import Crypto from 'crypto'
 import axios from 'axios'
 
 export const genAPI = async (windowEthereum: never): Promise<any> => {
@@ -15,12 +14,12 @@ export const genAPI = async (windowEthereum: never): Promise<any> => {
   const signer = await currencyConfig.getSigner()
 
   return {
-    async sendAndPay (arseedingUrl: string, data: Buffer, tokenSymbol: string, debug?: boolean) {
+    async sendAndPay (arseedingUrl: string, data: Buffer, tokenSymbol: string, opts: DataItemCreateOptions, debug?: boolean) {
       // 组装 data 成 bundle Item 并使用 signer 进行 item sign
       const dataItem = createData(
         data,
         signer,
-        { anchor: Crypto.randomBytes(32).toString('base64').slice(0, 32) }
+        opts
       )
       await dataItem.sign(signer)
 

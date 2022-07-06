@@ -1,6 +1,6 @@
 {
   "name": "arseeding-js",
-  "version": "0.0.6",
+  "version": "0.0.7",
   "repository": "git@xaber.github.com:everFinance/arseeding-js.git",
   "author": "xaber <xaber.twt@gmail.com>",
   "license": "MIT",
@@ -38,7 +38,7 @@
     "typescript": "^4.3.5"
   },
   "dependencies": {
-    "@bundlr-network/client": "0.7.14",
+    "bundlr-arseeding-client": "0.7.14",
     "arseeding-arbundles": "0.6.19",
     "axios": "^0.21.1",
     "bignumber.js": "^9.0.2",

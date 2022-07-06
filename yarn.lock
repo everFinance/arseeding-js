@@ -949,31 +949,6 @@
   resolved "https://registry.yarnpkg.com/@bcoe/v8-coverage/-/v8-coverage-0.2.3.tgz#75a2e8b51cb758a7553d6804a5932d7aace75c39"
   integrity sha512-0hYQ8SB4Db5zvZB4axdMHGwEaQjkZzFjQiN9LVYvIFB2nSUHW9tYpxWriPrWDASIxiaXax83REcLxuSdnGPZtw==
 
-"@bundlr-network/client@0.7.14":
-  version "0.7.14"
-  resolved "https://registry.yarnpkg.com/@bundlr-network/client/-/client-0.7.14.tgz#cc6f9e64d60225f9aa8436e5727641941c0a3bd2"
-  integrity sha512-WeNF6smgFJ/Ca/lWE8JXFA5C/1qLBTMAas9JgBB0cZceEVGsEynGOZFYlCdQFtTwpwU2hHci0NM0cpLnWKLimw==
-  dependencies:
-    "@solana/wallet-adapter-base" "^0.9.2"
-    "@solana/web3.js" "^1.36.0"
-    "@supercharge/promise-pool" "^2.1.0"
-    algosdk "^1.13.1"
-    arbundles "^0.6.19"
-    arweave "^1.11.4"
-    async-retry "^1.3.3"
-    axios "^0.25.0"
-    base64url "^3.0.1"
-    bignumber.js "^9.0.1"
-    bs58 "^4.0.1"
-    commander "^8.2.0"
-    csv "^6.0.5"
-    ethers "^5.5.1"
-    inquirer "^8.2.0"
-    js-sha256 "^0.9.0"
-    mime-types "^2.1.34"
-    near-api-js "^0.44.2"
-    near-seed-phrase "^0.2.0"
-
 "@cspotcode/source-map-support@^0.8.0":
   version "0.8.1"
   resolved "https://registry.yarnpkg.com/@cspotcode/source-map-support/-/source-map-support-0.8.1.tgz#00629c35a688e05a88b1cda684fb9d5e73f000a1"
@@ -2098,30 +2073,6 @@ anymatch@^3.0.3:
     normalize-path "^3.0.0"
     picomatch "^2.0.4"
 
-arbundles@^0.6.19:
-  version "0.6.19"
-  resolved "https://registry.yarnpkg.com/arbundles/-/arbundles-0.6.19.tgz#550f8835014ea7a4b4c51d6d22870db1108de99b"
-  integrity sha512-OenrPZOXuihEatKAT2R0ZtbHmkTcDV4Y0fsz28gHFeVP13cZl/eNR9UiWFCrvxA0hQIanmPYAX9tgfEmk4OJHw==
-  dependencies:
-    "@randlabs/myalgo-connect" "^1.1.2"
-    "@solana/wallet-adapter-base" "^0.9.2"
-    algosdk "^1.13.1"
-    arweave "^1.11.4"
-    arweave-stream-tx "^1.1.0"
-    avsc "https://github.com/Bundlr-Network/avsc#csp-fixes"
-    axios "^0.21.3"
-    base64url "^3.0.1"
-    bs58 "^4.0.1"
-    ethers "^5.5.1"
-    keccak "^3.0.2"
-    multistream "^4.1.0"
-    noble-ed25519 "^1.2.6"
-    process "^0.11.10"
-    secp256k1 "^4.0.2"
-    tmp-promise "^3.0.2"
-    ts-node "^10.5.0"
-    tslib "^2.3.0"
-
 arconnect@^0.4.2:
   version "0.4.2"
   resolved "https://registry.yarnpkg.com/arconnect/-/arconnect-0.4.2.tgz#83de7638fb46183e82d7ec7efb5594c5f7cdc806"
@@ -2167,7 +2118,7 @@ array.prototype.flat@^1.2.5:
     es-abstract "^1.19.2"
     es-shim-unscopables "^1.0.0"
 
-arseeding-arbundles@0.6.19:
+arseeding-arbundles@0.6.19, arseeding-arbundles@^0.6.19:
   version "0.6.19"
   resolved "https://registry.yarnpkg.com/arseeding-arbundles/-/arseeding-arbundles-0.6.19.tgz#551f52adbcec28f4333c2c72666fdc79e06e5c2b"
   integrity sha512-MfscIxXYT73ZaIr4xj8MeGSBpdeaiMqmevhB92eT1mD12f42BUsAptcw8IWUycfFVNiC0sgpJYUr9l+yIi/Qkw==
@@ -2243,9 +2194,9 @@ available-typed-arrays@^1.0.5:
   resolved "https://registry.yarnpkg.com/available-typed-arrays/-/available-typed-arrays-1.0.5.tgz#92f95616501069d07d10edb2fc37d3e1c65123b7"
   integrity sha512-DMD0KiN46eipeziST1LPP/STfDU0sufISXmjSgvVsoU2tqxctQeASejWcfNtxYKqETM1UxQ8sp2OrSBWpHY6sw==
 
-"avsc@https://github.com/Bundlr-Network/avsc#csp-fixes":
+"avsc@git+https://github.com/Bundlr-Network/avsc.git#csp-fixes":
   version "5.4.7"
-  resolved "https://github.com/Bundlr-Network/avsc#a730cc8018b79e114b6a3381bbb57760a24c6cef"
+  resolved "git+https://github.com/Bundlr-Network/avsc.git#a730cc8018b79e114b6a3381bbb57760a24c6cef"
 
 axios@^0.21.1, axios@^0.21.3:
   version "0.21.4"
@@ -2551,6 +2502,31 @@ bufferutil@^4.0.1:
   integrity sha512-jduaYOYtnio4aIAyc6UbvPCVcgq7nYpVnucyxr6eCYg/Woad9Hf/oxxBRDnGGjPfjUm6j5O/uBWhIu4iLebFaw==
   dependencies:
     node-gyp-build "^4.3.0"
+
+bundlr-arseeding-client@0.7.14:
+  version "0.7.14"
+  resolved "https://registry.yarnpkg.com/bundlr-arseeding-client/-/bundlr-arseeding-client-0.7.14.tgz#cda7a0d0502842a417451428a9fda0cc0298867d"
+  integrity sha512-nvAMmkllXuBgKHd2ocMEnGaLdOyk7YlgVNfyVYlrj4ohbuH541uHUh7kC/9YiZNAEkLimr6+RkqVqtXzvhUgAA==
+  dependencies:
+    "@solana/wallet-adapter-base" "^0.9.2"
+    "@solana/web3.js" "^1.36.0"
+    "@supercharge/promise-pool" "^2.1.0"
+    algosdk "^1.13.1"
+    arseeding-arbundles "^0.6.19"
+    arweave "^1.11.4"
+    async-retry "^1.3.3"
+    axios "^0.25.0"
+    base64url "^3.0.1"
+    bignumber.js "^9.0.1"
+    bs58 "^4.0.1"
+    commander "^8.2.0"
+    csv "^6.0.5"
+    ethers "^5.5.1"
+    inquirer "^8.2.0"
+    js-sha256 "^0.9.0"
+    mime-types "^2.1.34"
+    near-api-js "^0.44.2"
+    near-seed-phrase "^0.2.0"
 
 call-bind@^1.0.0, call-bind@^1.0.2:
   version "1.0.2"
