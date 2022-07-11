@@ -1,7 +1,8 @@
 import getCurrency from 'bundlr-arseeding-client/build/web/currencies'
-import { providers } from 'ethers'
+import { Wallet, providers } from 'ethers'
 import Everpay from 'everpay'
 import { createData, DataItemCreateOptions } from 'arseeding-arbundles'
+import EthereumSigner from 'arseeding-arbundles/src/signing/chains/ethereumSigner'
 import BigNumber from 'bignumber.js'
 import axios from 'axios'
 
@@ -14,6 +15,7 @@ export const genAPI = async (windowEthereum: never): Promise<any> => {
   const signer = await currencyConfig.getSigner()
 
   return {
+    signer,
     async sendAndPay (arseedingUrl: string, data: Buffer, tokenSymbol: string, opts: DataItemCreateOptions, debug?: boolean) {
       // 组装 data 成 bundle Item 并使用 signer 进行 item sign
       const dataItem = createData(
@@ -38,6 +40,58 @@ export const genAPI = async (windowEthereum: never): Promise<any> => {
           debug: debug,
           account: account,
           ethConnectedSigner: provider.getSigner(),
+          chainType: 'ethereum' as any
+        })
+
+        const result = await everpay.transfer({
+          amount: new BigNumber(fee).dividedBy(new BigNumber(10).pow(decimals)).toString(),
+          symbol: currency,
+          to: bundler,
+          data: order
+        })
+
+        return {
+          ...result,
+          order
+        }
+      } else {
+        return {
+          order
+        }
+      }
+    }
+  }
+}
+
+export const genNodeAPI = (pk: string): any => {
+  const signer = new EthereumSigner(pk)
+  const ethConnectedSigner = new Wallet(pk)
+
+  return {
+    signer,
+    async sendAndPay (arseedingUrl: string, data: Buffer, tokenSymbol: string, opts: DataItemCreateOptions, debug?: boolean) {
+      // 组装 data 成 bundle Item 并使用 signer 进行 item sign
+      const dataItem = createData(
+        data,
+        signer,
+        opts
+      )
+      await dataItem.sign(signer)
+
+      // 发送组装好的 item 到 arseeding serve
+      const api = await axios.create({ baseURL: arseedingUrl })
+      const res = await api.post(`/bundle/tx/${tokenSymbol}`, dataItem.getRaw(), {
+        headers: { 'Content-Type': 'application/octet-stream' },
+        maxBodyLength: Infinity
+      })
+      const order = res.data
+      const { fee, decimals, currency, bundler } = order
+      if (+fee > 0) {
+        const account = ethConnectedSigner.address
+        const everpay = new Everpay({
+          debug: debug,
+          account: account,
+          ethConnectedSigner: ethConnectedSigner,
           chainType: 'ethereum' as any
         })
 
