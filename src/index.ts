@@ -26,7 +26,7 @@ export const genAPI = async (windowEthereum: never): Promise<any> => {
       await dataItem.sign(signer)
 
       // 发送组装好的 item 到 arseeding serve
-      const api = await axios.create({ baseURL: arseedingUrl })
+      const api = axios.create({ baseURL: arseedingUrl })
       const res = await api.post(`/bundle/tx/${tokenSymbol}`, dataItem.getRaw(), {
         headers: { 'Content-Type': 'application/octet-stream' },
         maxBodyLength: Infinity
@@ -79,7 +79,7 @@ export const genNodeAPI = (pk: string): any => {
       await dataItem.sign(signer)
 
       // 发送组装好的 item 到 arseeding serve
-      const api = await axios.create({ baseURL: arseedingUrl })
+      const api = axios.create({ baseURL: arseedingUrl })
       const res = await api.post(`/bundle/tx/${tokenSymbol}`, dataItem.getRaw(), {
         headers: { 'Content-Type': 'application/octet-stream' },
         maxBodyLength: Infinity
@@ -113,4 +113,28 @@ export const genNodeAPI = (pk: string): any => {
       }
     }
   }
+}
+
+export const getItemMeta = async (arseedingUrl: string, itemId: string): Promise<any> => {
+  const api = axios.create({ baseURL: arseedingUrl })
+  const res = await api.get(`bundle/tx/${itemId}`)
+  return res.data
+}
+
+export const getBundleFee = async (arseedingUrl: string, size: string, currency: string): Promise<any> => {
+  const api = axios.create({ baseURL: arseedingUrl })
+  const res = await api.get(`bundle/fee/${size}/${currency}`)
+  return res.data
+}
+
+export const getOrders = async (arseedingUrl: string, signerAddr: string): Promise<any> => {
+  const api = axios.create({ baseURL: arseedingUrl })
+  const res = await api.get(`bundle/orders/${signerAddr}`)
+  return res.data
+}
+
+export const getDataByGW = async (arseedingUrl: string, itemId: string): Promise<any> => {
+  const api = axios.create({ baseURL: arseedingUrl })
+  const res = await api.get(`/${itemId}`)
+  return res.data
 }
