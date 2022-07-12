@@ -9,7 +9,7 @@ npm i arseeding-js
 import { genAPI } from 'arseeding-js'
 const instance = await genAPI(window.ethereum)
 
-const arseedUrl = 'your-arseed-service-url'
+const arseedUrl = 'https://arseed.web3infura.io'
 const data = Buffer.from('........')
 const payCurrency = 'usdc' // everpay supported all tokens
 const ops = {
@@ -19,7 +19,7 @@ const res = await instance.sendAndPay(arseedUrl, data, payCurrency, ops)
 console.log('res',res)
 
 // review data
-curl --location --request GET 'https://your-arseed-server/{{res.order.itemId}}'
+curl --location --request GET 'https://arseed.web3infura.io/{{res.order.itemId}}'
 ```
 
 ### example2 - node
@@ -27,9 +27,6 @@ curl --location --request GET 'https://your-arseed-server/{{res.order.itemId}}'
 import { genNodeAPI } from 'arseeding-js'
 
 const instance = await genNodeAPI('YOUR PRIVATE KEY')
-// dev
-instance.sendAndPay('https://seed-dev.everpay.io', Buffer.from('aa bb cc'), 'usdc', {}, true)
 
-// prod
-instance.sendAndPay('https://seed.everpay.io', Buffer.from('aa bb cc'), 'usdc', {})
+instance.sendAndPay('https://arseed.web3infura.io', Buffer.from('aa bb cc'), 'usdc', {})
 ```
