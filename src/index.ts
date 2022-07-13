@@ -6,8 +6,9 @@ import EthereumSigner from 'arseeding-arbundles/src/signing/chains/ethereumSigne
 import BigNumber from 'bignumber.js'
 import axios from 'axios'
 
-export const genAPI = async (windowEthereum: never): Promise<any> => {
-// metamask 签名认证，目的是读取到 public key
+export const genAPI = async (windowEthereum: any): Promise<any> => {
+  await windowEthereum.enable()
+  // metamask 签名认证，目的是读取到 public key
   const provider = new providers.Web3Provider(windowEthereum)
   await provider._ready()
   const currencyConfig = getCurrency('ethereum', provider)
