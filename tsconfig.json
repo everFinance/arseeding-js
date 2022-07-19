@@ -1,7 +1,7 @@
 {
   "compilerOptions": {
     "target": "es2019",
-    "module": "es2020",
+    "module": "CommonJS",
     "allowJs": true,
     "jsx": "preserve",
     "declarationMap": true,

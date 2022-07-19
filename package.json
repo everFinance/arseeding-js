@@ -38,10 +38,10 @@
     "typescript": "^4.3.5"
   },
   "dependencies": {
-    "bundlr-arseeding-client": "0.7.14",
     "arseeding-arbundles": "0.6.19",
     "axios": "^0.21.1",
     "bignumber.js": "^9.0.2",
+    "bundlr-arseeding-client": "0.7.14",
     "ethers": "^5.4.6",
     "everpay": "0.5.2",
     "lodash": "^4.17.21"
