@@ -1,4 +1,4 @@
-import { CreateAndSubmitItem } from '../src/submitOrder'
+import { createAndSubmitItem } from '../src/submitOrder'
 import EthereumSigner from 'arseeding-arbundles/src/signing/chains/ethereumSigner'
 // import ArweaveSigner from "arseeding-arbundles/src/signing/chains/ArweaveSigner";
 // import {readFileSync} from "fs";
@@ -14,9 +14,9 @@ async function uploadFile (signer: Signer) {
         ]
     }
     const arseedingUrl = 'https://arseed.web3infura.io'
-    const tokenSymbol = 'VRT'
+    const currency = 'VRT'
     const data = Buffer.from('aa bb cc')
-    const order = await CreateAndSubmitItem(signer, data, ops, arseedingUrl, tokenSymbol)
+    const order = await createAndSubmitItem(arseedingUrl, signer, data, ops, currency)
     console.log('order', order)
 }
 

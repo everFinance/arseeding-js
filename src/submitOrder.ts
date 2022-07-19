@@ -4,10 +4,10 @@ import DataItem from 'arseeding-arbundles/src/DataItem'
 import axios from 'axios'
 
 export {
-  CreateAndSubmitItem
+  createAndSubmitItem
 }
 
-async function CreateAndSubmitItem (signer: Signer, data: Buffer, opts: DataItemCreateOptions, arseedingUrl: string, tokenSymbol: string): Promise<string> {
+async function createAndSubmitItem (arseedingUrl: string, signer: Signer, data: Buffer, opts: DataItemCreateOptions, tokenSymbol: string): Promise<any> {
   const dataItem = await createAndSignItem(signer, data, opts)
   return await submit(arseedingUrl, dataItem, tokenSymbol)
 }
@@ -18,12 +18,11 @@ async function createAndSignItem (signer: Signer, data: Buffer, opts: DataItemCr
   return dataItem
 }
 
-async function submit (arseedingUrl: string, dataItem: DataItem, tokenSymbol: string): Promise<string> {
+async function submit (arseedingUrl: string, dataItem: DataItem, tokenSymbol: string): Promise<any> {
   const api = axios.create({ baseURL: arseedingUrl })
   const res = await api.post(`/bundle/tx/${tokenSymbol}`, dataItem.getRaw(), {
     headers: { 'Content-Type': 'application/octet-stream' },
     maxBodyLength: Infinity
   })
-  const order = res.data
-  return JSON.stringify(order)
+  return res.data
 }

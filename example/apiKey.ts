@@ -1,17 +1,15 @@
 import axios from "axios";
+import { submitByApikey } from "../src/index"
 
 // ts-node ./example/apiKey.ts
 async function useApiKey() {
     const arseedingUrl = 'https://arseed.web3infura.io'
-    const api = axios.create({ baseURL: arseedingUrl })
+    const apikey = ''
     const data = Buffer.from('aabbccddee')
+    const contentType = 'image/png'
     const tags = {'Content-Type':'image/png','a':'aa','b':'bb'}
-    const res = await api.post(`/bundle/data`, data, {
-        headers: { 'X-API-KEY': ''},
-        maxBodyLength: Infinity,
-        params: tags
-    })
-    console.log('res',res.data)
+    const res = await submitByApikey(arseedingUrl,apikey,data,contentType, tags)
+    console.log(res)
 }
 
 useApiKey()

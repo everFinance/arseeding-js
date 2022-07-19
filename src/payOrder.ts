@@ -2,12 +2,12 @@ import Everpay from 'everpay'
 import BigNumber from 'bignumber.js'
 import { ethers } from 'ethers'
 export {
-  PayOrder,
-  newEverpayByEcc
+  payOrder,
+  newEverpayByEcc,
+  newEverpayByRSA
 }
 
-async function PayOrder (everpay: Everpay, orderJs: string):Promise<string> {
-  const order = JSON.parse(orderJs)
+async function payOrder (everpay: Everpay, order: any): Promise<string> {
   const to = order.bundler
   const fee = order.fee
   const decimals = order.decimals
