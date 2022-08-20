@@ -1,5 +1,4 @@
 import PromisePool from "@supercharge/promise-pool/dist";
-import {createData} from "arseeding-arbundles";
 import mime from "mime-types";
 import {checkPaths, generateManifest} from "./manifest";
 import p from "path";
@@ -9,18 +8,26 @@ import {Config} from "./types";
 import {createAndSubmitItem} from "./submitOrder";
 import {newEverpayByEcc, payOrder} from "./payOrder";
 import BigNumber from "bignumber.js";
-import {errors} from "ethers";
 
-async function concurrentUploader(cfg:Config, files: string[], concurrency = 10): Promise<{results: Array<any> }> {
+async function concurrentUploader(cfg:Config, files: string[], concurrency = 10): Promise<{ errors: Array<any>, results: Array<any> }> {
+    const errors: Error[] = []
     const results = await PromisePool
         .for(files)
         .withConcurrency(concurrency > 50 ? 50 : concurrency)
-        .process(async (file) => {
-            const ord = await upload(file,cfg)
-            const relpath = p.relative(cfg.path, file)
-            return { relpath, ord }
+        .handleError(async (error, _) => {
+            errors.push(error)
+        })
+        .process(async (file, i, _) => {
+            try {
+                const ord = await upload(file, cfg)
+                const relpath = p.relative(cfg.path, file)
+                return {relpath, ord}
+            } catch (e) {
+                throw file
+            }
         }) as any
-    return {results: results.results }
+
+    return {errors, results: results.results }
 }
 
 // submit item for the file and not pay, return the order
@@ -44,12 +51,25 @@ export async function uploadFolder(path:string, privKey:string, url:string, curr
         path:path
     }
     const files = await checkPaths(path)
-    const res = await concurrentUploader(cfg, files, files.length)
-    const items = new Map()
     const ords = []
+    const {errors, results} = await concurrentUploader(cfg, files, files.length)
+    // serial upload timeout files again
+    if (errors.length > 0) {
+        const sleep = (ms: number | undefined) => new Promise(r => setTimeout(r, ms));
+        for(const [_,file] of errors.entries()) {
+            try {
+                const ord = await upload(file, cfg)
+                ords.push(ord)
+                await sleep(1500) // it's for upload all folder as much as possible, maybe set sleep longer
+            }catch (e) {
+                throw "upload folder fail because network, try again later"
+            }
+        }
+    }
+    const items = new Map()
     let totFee = 0
     let decimals = 0
-    for(const [_,obj] of res.results.entries()) {
+    for(const [_,obj] of results.entries()) {
         items.set(obj.relpath, obj.ord.itemId)
         ords.push(obj.ord)
         totFee += +obj.ord.fee

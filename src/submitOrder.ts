@@ -22,7 +22,8 @@ async function submit (arseedingUrl: string, dataItem: DataItem, tokenSymbol: st
   const api = axios.create({ baseURL: arseedingUrl })
   const res = await api.post(`/bundle/tx/${tokenSymbol}`, dataItem.getRaw(), {
     headers: { 'Content-Type': 'application/octet-stream' },
-    maxBodyLength: Infinity
+    maxBodyLength: Infinity,
+    timeout:10000
   })
   return res.data
 }
