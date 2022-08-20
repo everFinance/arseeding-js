@@ -39,16 +39,17 @@ async function upload(file: string, cfg:Config) {
             { name: 'Content-Type', value: mime.lookup(file).toString() }
         ]
     }
-    return await createAndSubmitItem(cfg.arseedUrl, cfg.signer, data, ops, cfg.currency)
+    return await createAndSubmitItem(data, ops, cfg)
 }
 
 // uploadFolder return all orders need to pay
-export async function uploadFolder(path:string, privKey:string, url:string, currency:string) {
+export async function uploadFolder(path:string, privKey:string, url:string, currency:string, apiKey?:string) {
     const cfg : Config = {
         signer:new EthereumSigner(privKey),
         arseedUrl:url,
         currency:currency,
-        path:path
+        path:path,
+        apiKey:apiKey
     }
     const files = await checkPaths(path)
     const ords = []
@@ -84,7 +85,7 @@ export async function uploadFolder(path:string, privKey:string, url:string, curr
             { name: 'Content-Type', value: 'application/x.arweave-manifest+json' }
         ]
     }
-    const ord = await createAndSubmitItem(cfg.arseedUrl, cfg.signer, data, ops, cfg.currency)
+    const ord = await createAndSubmitItem( data, ops, cfg)
     decimals = ord.decimals
     const maniId = ord.itemId
     const fee = new BigNumber(totFee).dividedBy(new BigNumber(10).pow(decimals)).toString()

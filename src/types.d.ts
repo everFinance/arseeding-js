@@ -12,4 +12,5 @@ export interface Config {
     path: string // folder need to upload
     currency: string // USDC,ETH...
     arseedUrl:string // 'https://arseed.web3infura.io'
+    apiKey?:string
 }

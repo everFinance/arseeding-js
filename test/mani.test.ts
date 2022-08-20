@@ -1,12 +1,13 @@
 import {checkPaths} from "../src/manifest";
 import {batchPay, uploadFolder, uploadFolderAndPay} from "../src/uploadFolder";
 
-const path = './test'
+const path = './build'
 const priv = ''
-const url = 'https://arseed.web3infura.io'
+const url = 'https://arseed-dev.web3infura.io'
+const apiKey = ''
 test('mani',async ()=>{
-    const {ords, fee, maniId} = await uploadFolder(path,priv,url,'USDC')
-    const res = await batchPay(ords, priv)
-    console.log(fee, maniId)
-    console.log(res)
+    const {ords, fee, maniId} = await uploadFolder(path,priv,url,'USDC',apiKey)
+    // const res = await batchPay(ords, priv)
+    console.log(ords.length,fee, maniId)
+    // console.log(res)
 })
