@@ -6,7 +6,7 @@ import EthereumSigner from "arseeding-arbundles/src/signing/chains/ethereumSigne
 import {readFileSync} from "fs";
 import {Config} from "./types";
 import {createAndSubmitItem} from "./submitOrder";
-import {newEverpayByEcc, payOrder} from "./payOrder";
+import {batchPayOrders, newEverpayByEcc} from "./payOrder";
 import BigNumber from "bignumber.js";
 
 async function concurrentUploader(cfg:Config, files: string[], concurrency = 10): Promise<{ errors: Array<any>, results: Array<any> }> {
@@ -90,28 +90,26 @@ export async function uploadFolder(path:string, privKey:string, url:string, curr
     const maniId = ord.itemId
     const fee = new BigNumber(totFee).dividedBy(new BigNumber(10).pow(decimals)).toString()
     ords.push(ord)
-    return { ords, fee, maniId}
+    return { ords, fee, maniId }
 }
-
-// concurrency bug
-// export async function batchPay(ords:any[], privKey:string, concurrency = 10) {
-//     const everPay = newEverpayByEcc(privKey)
-//     const results = await PromisePool
-//         .for(ords)
-//         .withConcurrency(concurrency > 50 ? 50 : concurrency)
-//         .process(async (ord) => {
-//             const everHash = await payOrder(everPay, ord)
-//             return {everHash}
-//         }) as any
-//     return {errors: results.errors, results: results.results}
-// }
 
 export async function batchPay(ords:any[], privKey:string) {
     const everPay = newEverpayByEcc(privKey)
     const res = []
-    for (const ord of ords) {
-        const everHash = await payOrder(everPay, ord)
-        res.push(everHash)
+    for (let i = 0; i < ords.length; i += 500) {
+        let lastIndex
+        if ((i+1) * 500 < ords.length) {
+            lastIndex = (i + 1)*500
+        } else {
+            lastIndex = ords.length
+        }
+        const partOrds = ords.slice(i,lastIndex)
+        try {
+            const everHash = await batchPayOrders(everPay, partOrds)
+            res.push(everHash)
+        } catch (e) {
+            throw e
+        }
     }
     return res
 }

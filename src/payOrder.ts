@@ -3,20 +3,40 @@ import BigNumber from 'bignumber.js'
 import { ethers } from 'ethers'
 export {
   payOrder,
+  batchPayOrders,
   newEverpayByEcc,
   newEverpayByRSA
 }
 
 async function payOrder (everpay: Everpay, order: any): Promise<string> {
-  const to = order.bundler
-  const fee = order.fee
-  const decimals = order.decimals
+  const ords = []
+  ords.push(order)
+  return await batchPayOrders(everpay,ords)
+}
+
+async function batchPayOrders (everpay: Everpay, orders: any[]): Promise<string> {
+  if (orders.length == 0) {
+    return "No Order Need to Pay"
+  }
+  const to = orders[0].bundler
+  const currency = orders[0].currency
+  let fee = 0
+  const decimals = orders[0].decimals
+  const ids = []
+  for (const ord of orders) {
+    ids.push(ord.itemId)
+    fee += +ord.fee
+  }
 
   const result = await everpay.transfer({
     amount: new BigNumber(fee).dividedBy(new BigNumber(10).pow(decimals)).toString(),
-    symbol: order.currency,
+    symbol: currency,
     to: to,
-    data: order
+    data: {
+      "appName":"arseeding",
+      "action":"payment",
+      "itemIds": ids
+    }
   })
   return result.everHash
 }
