@@ -3,8 +3,8 @@ import { Wallet, providers } from 'ethers'
 import Everpay from 'everpay'
 import { createData, DataItemCreateOptions } from 'arseeding-arbundles'
 import EthereumSigner from 'arseeding-arbundles/src/signing/chains/ethereumSigner'
-import BigNumber from 'bignumber.js'
 import axios from 'axios'
+import { payOrder } from './payOrder'
 
 export const genAPI = async (windowEthereum: any): Promise<any> => {
   await windowEthereum.enable()
@@ -18,7 +18,6 @@ export const genAPI = async (windowEthereum: any): Promise<any> => {
   return {
     signer,
     async sendAndPay (arseedingUrl: string, data: Buffer, tokenSymbol: string, opts: DataItemCreateOptions, debug?: boolean) {
-      // 组装 data 成 bundle Item 并使用 signer 进行 item sign
       const dataItem = createData(
         data,
         signer,
@@ -26,14 +25,13 @@ export const genAPI = async (windowEthereum: any): Promise<any> => {
       )
       await dataItem.sign(signer)
 
-      // 发送组装好的 item 到 arseeding serve
       const api = axios.create({ baseURL: arseedingUrl })
       const res = await api.post(`/bundle/tx/${tokenSymbol}`, dataItem.getRaw(), {
         headers: { 'Content-Type': 'application/octet-stream' },
         maxBodyLength: Infinity
       })
       const order = res.data
-      const { fee, decimals, currency, bundler } = order
+      const { fee } = order
       if (+fee > 0) {
         const accounts = await provider.listAccounts()
         const account = accounts[0] ?? ''
@@ -43,16 +41,10 @@ export const genAPI = async (windowEthereum: any): Promise<any> => {
           ethConnectedSigner: provider.getSigner(),
           chainType: 'ethereum' as any
         })
-
-        const result = await everpay.transfer({
-          amount: new BigNumber(fee).dividedBy(new BigNumber(10).pow(decimals)).toString(),
-          symbol: currency,
-          to: bundler,
-          data: order
-        })
+        const everHash = await payOrder(everpay, order)
 
         return {
-          ...result,
+          everHash,
           order
         }
       } else {
@@ -71,7 +63,6 @@ export const genNodeAPI = (pk: string): any => {
   return {
     signer,
     async sendAndPay (arseedingUrl: string, data: Buffer, tokenSymbol: string, opts: DataItemCreateOptions, debug?: boolean) {
-      // 组装 data 成 bundle Item 并使用 signer 进行 item sign
       const dataItem = createData(
         data,
         signer,
@@ -79,14 +70,13 @@ export const genNodeAPI = (pk: string): any => {
       )
       await dataItem.sign(signer)
 
-      // 发送组装好的 item 到 arseeding serve
       const api = axios.create({ baseURL: arseedingUrl })
       const res = await api.post(`/bundle/tx/${tokenSymbol}`, dataItem.getRaw(), {
         headers: { 'Content-Type': 'application/octet-stream' },
         maxBodyLength: Infinity
       })
       const order = res.data
-      const { fee, decimals, currency, bundler } = order
+      const { fee } = order
       if (+fee > 0) {
         const account = ethConnectedSigner.address
         const everpay = new Everpay({
@@ -96,15 +86,10 @@ export const genNodeAPI = (pk: string): any => {
           chainType: 'ethereum' as any
         })
 
-        const result = await everpay.transfer({
-          amount: new BigNumber(fee).dividedBy(new BigNumber(10).pow(decimals)).toString(),
-          symbol: currency,
-          to: bundler,
-          data: order
-        })
+        const everHash = await payOrder(everpay, order)
 
         return {
-          ...result,
+          everHash,
           order
         }
       } else {
