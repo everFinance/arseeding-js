@@ -6,7 +6,7 @@ import EthereumSigner from "arseeding-arbundles/src/signing/chains/ethereumSigne
 import {readFileSync} from "fs";
 import {Config} from "./types";
 import {createAndSubmitItem} from "./submitOrder";
-import {batchPayOrders, newEverpayByEcc} from "./payOrder";
+import {newEverpayByEcc, payOrders} from "./payOrder";
 import BigNumber from "bignumber.js";
 
 async function concurrentUploader(cfg:Config, files: string[], concurrency = 10): Promise<{ errors: Array<any>, results: Array<any> }> {
@@ -31,7 +31,7 @@ async function concurrentUploader(cfg:Config, files: string[], concurrency = 10)
 }
 
 // submit item for the file and not pay, return the order
-async function upload(file: string, cfg:Config) {
+async function upload(file: string, cfg:Config): Promise<any> {
     const data = readFileSync(file)
     const ops = {
         tags: [
@@ -43,10 +43,10 @@ async function upload(file: string, cfg:Config) {
 }
 
 // uploadFolder return all orders need to pay
-export async function uploadFolder(path:string, privKey:string, url:string, currency:string, apiKey?:string) {
+export async function uploadFolder(path:string, privKey:string, arseedUrl:string, currency:string, apiKey?:string): Promise<any> {
     const cfg : Config = {
         signer:new EthereumSigner(privKey),
-        arseedUrl:url,
+        arseedUrl:arseedUrl,
         currency:currency,
         path:path,
         apiKey:apiKey
@@ -85,7 +85,7 @@ export async function uploadFolder(path:string, privKey:string, url:string, curr
             { name: 'Content-Type', value: 'application/x.arweave-manifest+json' }
         ]
     }
-    const ord = await createAndSubmitItem( data, ops, cfg)
+    const ord = await createAndSubmitItem(data, ops, cfg)
     decimals = ord.decimals
     const maniId = ord.itemId
     const fee = new BigNumber(totFee).dividedBy(new BigNumber(10).pow(decimals)).toString()
@@ -93,7 +93,7 @@ export async function uploadFolder(path:string, privKey:string, url:string, curr
     return { ords, fee, maniId }
 }
 
-export async function batchPay(ords:any[], privKey:string) {
+export async function batchPayOrders(ords:any[], privKey:string): Promise<any> {
     const everPay = newEverpayByEcc(privKey)
     const res = []
     for (let i = 0; i < ords.length; i += 500) {
@@ -105,7 +105,7 @@ export async function batchPay(ords:any[], privKey:string) {
         }
         const partOrds = ords.slice(i,lastIndex)
         try {
-            const everHash = await batchPayOrders(everPay, partOrds)
+            const everHash = await payOrders(everPay, partOrds)
             res.push(everHash)
         } catch (e) {
             throw e
@@ -114,9 +114,7 @@ export async function batchPay(ords:any[], privKey:string) {
     return res
 }
 
-export async function uploadFolderAndPay(path:string, privKey:string, url:string, currency:string) {
-    const {ords, fee} = await uploadFolder(path, privKey, url, currency)
-    const res = await batchPay(ords, privKey)
-    console.log(res)
+export async function uploadFolderAndPay(path:string, privKey:string, url:string, currency:string): Promise<any> {
+    const { ords } = await uploadFolder(path, privKey, url, currency)
+    return await batchPayOrders(ords, privKey)
 }
-

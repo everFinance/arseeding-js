@@ -3,7 +3,7 @@ import BigNumber from 'bignumber.js'
 import { ethers } from 'ethers'
 export {
   payOrder,
-  batchPayOrders,
+  payOrders,
   newEverpayByEcc,
   newEverpayByRSA
 }
@@ -11,11 +11,11 @@ export {
 async function payOrder (everpay: Everpay, order: any): Promise<string> {
   const ords = []
   ords.push(order)
-  return await batchPayOrders(everpay,ords)
+  return await payOrders(everpay,ords)
 }
 
-async function batchPayOrders (everpay: Everpay, orders: any[]): Promise<string> {
-  if (orders.length == 0) {
+async function payOrders (everpay: Everpay, orders: any[]): Promise<string> {
+  if (orders.length === 0) {
     return "No Order Need to Pay"
   }
   const to = orders[0].bundler
