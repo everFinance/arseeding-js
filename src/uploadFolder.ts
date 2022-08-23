@@ -54,6 +54,8 @@ export async function uploadFolder(path:string, privKey:string, arseedUrl:string
     const files = await checkPaths(path)
     const ords = []
     const {errors, results} = await concurrentUploader(cfg, files, files.length)
+    let totFee = 0
+    const items = new Map()
     // serial upload timeout files again
     if (errors.length > 0) {
         const sleep = (ms: number | undefined) => new Promise(r => setTimeout(r, ms));
@@ -61,14 +63,16 @@ export async function uploadFolder(path:string, privKey:string, arseedUrl:string
             try {
                 const ord = await upload(file, cfg)
                 ords.push(ord)
+                totFee += +ord.fee
+                const relPath = p.relative(cfg.path, file)
+                items.set(relPath, ord.itemId)
                 await sleep(1500) // it's for upload all folder as much as possible, maybe set sleep longer
             }catch (e) {
                 throw "upload folder fail because network, try again later"
             }
         }
     }
-    const items = new Map()
-    let totFee = 0
+
     let decimals = 0
     for(const [_,obj] of results.entries()) {
         items.set(obj.relpath, obj.ord.itemId)
@@ -86,6 +90,7 @@ export async function uploadFolder(path:string, privKey:string, arseedUrl:string
         ]
     }
     const ord = await createAndSubmitItem(data, ops, cfg)
+    totFee += +ord.fee
     decimals = ord.decimals
     const maniId = ord.itemId
     const fee = new BigNumber(totFee).dividedBy(new BigNumber(10).pow(decimals)).toString()
