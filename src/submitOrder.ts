@@ -20,15 +20,21 @@ async function createAndSignItem (signer: Signer, data: Buffer, opts: DataItemCr
   return dataItem
 }
 
-async function submit (arseedingUrl: string, dataItem: DataItem, tokenSymbol: string, apiKey?:string): Promise<any> {
+async function submit (arseedingUrl: string, dataItem: DataItem, tokenSymbol: string, apiKey?: string): Promise<any> {
   const api = axios.create({ baseURL: arseedingUrl })
-  const res = await api.post(`/bundle/tx/${tokenSymbol}`, dataItem.getRaw(), {
-    headers: {
+  let header = {
+    'Content-Type': 'application/octet-stream'
+  }
+  if (apiKey) {
+    header = {
       'Content-Type': 'application/octet-stream',
-      'X-API-KEY':apiKey
-    },
+      'X-API-KEY': apiKey
+    }
+  }
+  const res = await api.post(`/bundle/tx/${tokenSymbol}`, dataItem.getRaw(), {
+    headers: header,
     maxBodyLength: Infinity,
-    timeout:10000
+    timeout: 10000
   })
   return res.data
 }
