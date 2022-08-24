@@ -120,6 +120,7 @@ export async function batchPayOrders(ords:any[], privKey:string): Promise<any> {
 }
 
 export async function uploadFolderAndPay(path:string, privKey:string, url:string, currency:string): Promise<any> {
-    const { ords } = await uploadFolder(path, privKey, url, currency)
-    return await batchPayOrders(ords, privKey)
+    const { ords, fee, maniId } = await uploadFolder(path, privKey, url, currency)
+    const everHash =  await batchPayOrders(ords, privKey)
+    return {fee, maniId, everHash}
 }

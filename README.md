@@ -30,3 +30,24 @@ const instance = await genNodeAPI('YOUR PRIVATE KEY')
 
 instance.sendAndPay('https://arseed.web3infura.io', Buffer.from('aa bb cc'), 'usdc', {})
 ```
+
+### example3 - upload folder
+```ts
+import {batchPayOrders, uploadFolder, uploadFolderAndPay} from "arseeding-js/cjs/uploadFolder";
+
+const path = './src/nft'
+const priv = '9d8bdd0d2f1e73dffe9252ee6f38325b7e195669541f76559760ef615a588be8'
+const url = 'https://arseed.web3infura.io'
+const currency = 'USDC' // or ETH,BNB etc.
+
+
+uploadFolderAndPay(path,priv,url,'USDC').catch((e)=>{
+    console.log(e)
+}).then((res)=>{
+    console.log(res.maniId)
+})
+
+// review manifest Data
+curl --location --request GET 'https://arseed.web3infura.io/{res.maniId}'
+```
+uploadFolderAndPay can be divided by uploadFolder and batchPayOrders
