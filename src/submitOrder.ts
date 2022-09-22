@@ -2,14 +2,14 @@ import { createData, DataItemCreateOptions } from 'arseeding-arbundles'
 import { Signer } from 'arseeding-arbundles/src/signing'
 import DataItem from 'arseeding-arbundles/src/DataItem'
 import axios from 'axios'
-import {submitByApikey} from "./index";
-import {Config} from "./types";
+import { submitByApikey } from './index'
+import { Config } from './types'
 
 export {
   createAndSubmitItem
 }
 
-async function createAndSubmitItem ( data: Buffer, opts: DataItemCreateOptions,cfg: Config): Promise<any> {
+async function createAndSubmitItem (data: Buffer, opts: DataItemCreateOptions, cfg: Config): Promise<any> {
   const dataItem = await createAndSignItem(cfg.signer, data, opts)
   return await submit(cfg.arseedUrl, dataItem, cfg.currency, cfg.apiKey)
 }
@@ -24,8 +24,8 @@ async function submit (arseedingUrl: string, dataItem: DataItem, tokenSymbol: st
   const api = axios.create({ baseURL: arseedingUrl })
   let header = {
     'Content-Type': 'application/octet-stream'
-  }
-  if (apiKey) {
+  } as any
+  if (apiKey != null) {
     header = {
       'Content-Type': 'application/octet-stream',
       'X-API-KEY': apiKey
