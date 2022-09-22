@@ -16,11 +16,11 @@ async function payOrder (everpay: Everpay, order: any): Promise<string> {
 
 async function payOrders (everpay: Everpay, orders: any[]): Promise<string> {
   if (orders.length === 0) {
-    return "No Order Need to Pay"
+    return 'No Order Need to Pay'
   }
   const to = orders[0].bundler
   const currency = orders[0].currency
-  let fee = 0
+  let fee = 1 // default add 1
   const decimals = orders[0].decimals
   const ids = []
   for (const ord of orders) {

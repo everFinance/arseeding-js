@@ -4,6 +4,8 @@ import EthereumSigner from 'arseeding-arbundles/src/signing/chains/ethereumSigne
 // import {readFileSync} from "fs";
 // import path from "path";
 import { Signer } from 'arseeding-arbundles/src/signing'
+import {Config} from "../src/types";
+import {readFileSync} from "fs";
 
 // ts-node ./example/uploadFile.ts
 async function uploadFile (signer: Signer) {
@@ -13,10 +15,16 @@ async function uploadFile (signer: Signer) {
             { name: 'Content-Type', value: 'imag/png' }
         ]
     }
-    const arseedingUrl = 'https://arseed.web3infura.io'
+    const arseedingUrl = 'https://arseed.web3infra.dev'
     const currency = 'VRT'
+    const cfg: Config =  {
+        signer: signer,
+        path:"",
+        arseedUrl: arseedingUrl,
+        currency: currency
+    }
     const data = Buffer.from('aa bb cc')
-    const order = await createAndSubmitItem(arseedingUrl, signer, data, ops, currency)
+    const order = await createAndSubmitItem( data, ops, cfg)
     console.log('order', order)
 }
 

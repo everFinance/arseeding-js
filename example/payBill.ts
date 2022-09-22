@@ -1,4 +1,4 @@
-import {newEverpayByEcc, payOrder} from "../src/payOrder";
+import {newEverpayByEcc, newEverpayByRSA, payOrder} from "../src/payOrder";
 
 // ts-node ./example/payBill.ts
 async function payBill() {
