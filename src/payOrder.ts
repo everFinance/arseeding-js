@@ -52,7 +52,7 @@ function newEverpayByEcc (eccPrivateKey: string): Everpay {
   return pay
 }
 
-function newEverpayByRSA (arJWK: string, arAddress: string): Everpay {
+function newEverpayByRSA (arJWK: any, arAddress: string): Everpay {
   const everpay = new Everpay({
     account: arAddress,
     chainType: 'arweave' as any,
