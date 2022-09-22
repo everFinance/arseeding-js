@@ -43,7 +43,7 @@ async function upload (file: string, cfg: Config): Promise<any> {
 }
 
 // uploadFolder return all orders need to pay
-export async function uploadFolder (path: string, privKey: string, arseedUrl: string, currency: string, apiKey?: string): Promise<any> {
+export async function uploadFolder (path: string, privKey: string, arseedUrl: string, currency: string, indexFile?: string, apiKey?: string): Promise<any> {
   const cfg: Config = {
     signer: new EthereumSigner(privKey),
     arseedUrl: arseedUrl,
@@ -80,7 +80,7 @@ export async function uploadFolder (path: string, privKey: string, arseedUrl: st
     ords.push(obj.ord)
     totFee += +obj.ord.fee
   }
-  const mani = generateManifest({ items })
+  const mani = generateManifest({ items, indexFile })
   const maniStr = JSON.stringify(mani)
 
   // upload manifest
@@ -120,7 +120,7 @@ export async function batchPayOrders (ords: any[], privKey: string): Promise<any
   return res
 }
 
-export async function uploadFolderAndPay (path: string, privKey: string, url: string, currency: string): Promise<any> {
+export async function uploadFolderAndPay (path: string, privKey: string, url: string, currency: string, indexFile?: string): Promise<any> {
   const { ords, fee, maniId } = await uploadFolder(path, privKey, url, currency)
   const everHash =  await batchPayOrders(ords, privKey)
     return {fee, maniId, everHash}

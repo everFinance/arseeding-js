@@ -1,14 +1,19 @@
-import {checkPaths} from "../src/manifest";
-import {batchPayOrders, uploadFolder} from "../src/uploadFolder";
+import {batchPayOrders, uploadFolder, uploadFolderAndPay} from "../src/uploadFolder";
 
-const path = './test/dist'
+const path = './build'
 const priv = ''
-const url = 'https://arseed-dev.web3infra.dev'
-const apiKey = ''
-
-test('manifest_uploadFolder',async ()=>{
-    const {ords, fee, maniId} = await uploadFolder(path,priv,url,'USDC',apiKey)
+const url = 'https://arseed.web3infura.io'
+const indexFile = 'ddddd'
+test('mani',async ()=>{
+    const {ords, fee, maniId} = await uploadFolder(path,priv,url,'USDC',indexFile)
     const res = await batchPayOrders(ords, priv)
-    console.log(ords.length,fee, maniId)
+    console.log(ords.length, fee, maniId)
     console.log(res)
 })
+
+uploadFolder(path,priv,url,'USDC').catch((e)=>{
+    console.log(e)
+}).then((res)=>{
+    console.log(res)
+})
+
