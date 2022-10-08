@@ -33,8 +33,7 @@ async function submit (arseedingUrl: string, dataItem: DataItem, tokenSymbol: st
   }
   const res = await api.post(`/bundle/tx/${tokenSymbol}`, dataItem.getRaw(), {
     headers: header,
-    maxBodyLength: Infinity,
-    timeout: 10000
+    maxBodyLength: Infinity
   })
   return res.data
 }
