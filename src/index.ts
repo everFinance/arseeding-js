@@ -1,19 +1,17 @@
-import getCurrency from 'bundlr-arseeding-client/build/web/currencies'
 import { Wallet, providers } from 'ethers'
 import Everpay from 'everpay'
 import { createData, DataItemCreateOptions } from 'arseeding-arbundles'
 import EthereumSigner from 'arseeding-arbundles/src/signing/chains/ethereumSigner'
 import axios from 'axios'
 import { payOrder } from './payOrder'
+import { InjectedEthereumSigner } from 'arseeding-arbundles/src/signing'
 
 export const genAPI = async (windowEthereum: any): Promise<any> => {
   await windowEthereum.enable()
-  // metamask 签名认证，目的是读取到 public key
   const provider = new providers.Web3Provider(windowEthereum)
   await provider._ready()
-  const currencyConfig = getCurrency('ethereum', provider)
-  await currencyConfig.ready()
-  const signer = await currencyConfig.getSigner()
+  const signer = new InjectedEthereumSigner(provider)
+  await signer.setPublicKey()
 
   return {
     signer,
