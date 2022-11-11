@@ -2,7 +2,6 @@ import { createData, DataItemCreateOptions } from 'arseeding-arbundles'
 import { Signer } from 'arseeding-arbundles/src/signing'
 import DataItem from 'arseeding-arbundles/src/DataItem'
 import axios from 'axios'
-import { submitByApikey } from './index'
 import { Config } from './types'
 
 export {
