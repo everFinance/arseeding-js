@@ -2116,10 +2116,10 @@
     "es-abstract" "^1.19.2"
     "es-shim-unscopables" "^1.0.0"
 
-"arseeding-arbundles@^0.6.19", "arseeding-arbundles@0.6.19":
-  "integrity" "sha512-MfscIxXYT73ZaIr4xj8MeGSBpdeaiMqmevhB92eT1mD12f42BUsAptcw8IWUycfFVNiC0sgpJYUr9l+yIi/Qkw=="
-  "resolved" "https://registry.npmjs.org/arseeding-arbundles/-/arseeding-arbundles-0.6.19.tgz"
-  "version" "0.6.19"
+"arseeding-arbundles@^0.6.19", "arseeding-arbundles@^0.6.22":
+  "integrity" "sha512-1f0uhNdvcR9wMx4rQmdL+B8iQJTuRX4voSfsRxdtwJlmK5lWpSDnYPju32dO3l238VVRPx4By5Hep514Ddnhuw=="
+  "resolved" "https://registry.npmjs.org/arseeding-arbundles/-/arseeding-arbundles-0.6.22.tgz"
+  "version" "0.6.22"
   dependencies:
     "@randlabs/myalgo-connect" "^1.1.2"
     "@solana/wallet-adapter-base" "^0.9.2"

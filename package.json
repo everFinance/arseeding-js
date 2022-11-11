@@ -39,7 +39,7 @@
     "typescript": "^4.3.5"
   },
   "dependencies": {
-    "arseeding-arbundles": "0.6.22",
+    "arseeding-arbundles": "^0.6.22",
     "axios": "^0.21.1",
     "bignumber.js": "^9.0.2",
     "bundlr-arseeding-client": "0.7.14",
