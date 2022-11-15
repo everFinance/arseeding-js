@@ -109,8 +109,7 @@ export const genArweaveAPI = async (windowArweaveWallet: any): Promise<any> => {
       const order = res.data
       const { fee } = order
       if (+fee > 0) {
-        const accounts = await windowArweaveWallet.getActiveAddress()
-        const account = accounts[0] ?? ''
+        const account = await windowArweaveWallet.getActiveAddress()
         const everpay = new Everpay({
           debug: debug,
           account: account,
