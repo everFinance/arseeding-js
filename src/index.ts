@@ -4,7 +4,7 @@ import { createData, DataItemCreateOptions } from 'arseeding-arbundles'
 import EthereumSigner from 'arseeding-arbundles/src/signing/chains/ethereumSigner'
 import axios from 'axios'
 import { payOrder } from './payOrder'
-import { InjectedEthereumSigner } from 'arseeding-arbundles/src/signing'
+import { InjectedEthereumSigner, InjectedArweaveSigner } from 'arseeding-arbundles/src/signing'
 
 export const genAPI = async (windowEthereum: any): Promise<any> => {
   await windowEthereum.enable()
@@ -38,6 +38,84 @@ export const genAPI = async (windowEthereum: any): Promise<any> => {
           account: account,
           ethConnectedSigner: provider.getSigner(),
           chainType: 'ethereum' as any
+        })
+        const everHash = await payOrder(everpay, order)
+
+        return {
+          everHash,
+          order
+        }
+      } else {
+        return {
+          order
+        }
+      }
+    }
+  }
+}
+
+const isString = (obj: any): boolean => {
+  return Object.prototype.toString.call(obj) === '[object String]'
+}
+
+const checkArPermissions = async (windowArweaveWallet: any, permissions: string[] | string): Promise<void> => {
+  let existingPermissions: string[] = []
+  const checkPermissions = isString(permissions) ? [permissions] : permissions as string[]
+
+  try {
+    existingPermissions = await windowArweaveWallet.getPermissions()
+  } catch {
+    throw new Error('PLEASE_INSTALL_ARCONNECT')
+  }
+
+  if (checkPermissions.length === 0) {
+    return
+  }
+  const checkFunc = (permission: string): boolean => {
+    return !existingPermissions.includes(permission)
+  }
+
+  if (checkPermissions.some(checkFunc as any)) {
+    await windowArweaveWallet.connect(checkPermissions as never[])
+  }
+}
+
+export const genArweaveAPI = async (windowArweaveWallet: any): Promise<any> => {
+  await checkArPermissions(windowArweaveWallet, [
+    'ACCESS_ADDRESS',
+    'ACCESS_ALL_ADDRESSES',
+    'ACCESS_PUBLIC_KEY',
+    'SIGN_TRANSACTION',
+    'SIGNATURE'
+  ])
+  const signer = new InjectedArweaveSigner(windowArweaveWallet)
+  await signer.setPublicKey()
+
+  return {
+    signer,
+    async sendAndPay (arseedingUrl: string, data: Buffer, tokenSymbol: string, opts: DataItemCreateOptions, debug?: boolean) {
+      const dataItem = createData(
+        data,
+        signer,
+        opts
+      )
+      await dataItem.sign(signer)
+
+      const api = axios.create({ baseURL: arseedingUrl })
+      const res = await api.post(`/bundle/tx/${tokenSymbol}`, dataItem.getRaw(), {
+        headers: { 'Content-Type': 'application/octet-stream' },
+        maxBodyLength: Infinity
+      })
+      const order = res.data
+      const { fee } = order
+      if (+fee > 0) {
+        const accounts = await windowArweaveWallet.getActiveAddress()
+        const account = accounts[0] ?? ''
+        const everpay = new Everpay({
+          debug: debug,
+          account: account,
+          arJWK: 'use_wallet',
+          chainType: 'arweave' as any
         })
         const everHash = await payOrder(everpay, order)
 
