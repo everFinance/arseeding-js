@@ -20,16 +20,15 @@ async function payOrders (everpay: Everpay, orders: any[]): Promise<string> {
   }
   const to = orders[0].bundler
   const currency = orders[0].currency
-  let fee = 1 // default add 1
   const decimals = orders[0].decimals
   const ids = []
+  let fee = new BigNumber(0)
   for (const ord of orders) {
     ids.push(ord.itemId)
-    fee += +ord.fee
+    fee = fee.plus(ord.fee)
   }
-
   const result = await everpay.transfer({
-    amount: new BigNumber(fee).dividedBy(new BigNumber(10).pow(decimals)).toString(),
+    amount: fee.dividedBy(new BigNumber(10).pow(decimals)).toString(),
     symbol: currency,
     to: to,
     data: {
