@@ -11,7 +11,7 @@ export {
 async function payOrder (everpay: Everpay, order: any): Promise<string> {
   const ords = []
   ords.push(order)
-  return await payOrders(everpay,ords)
+  return await payOrders(everpay, ords)
 }
 
 async function payOrders (everpay: Everpay, orders: any[]): Promise<string> {
@@ -32,9 +32,9 @@ async function payOrders (everpay: Everpay, orders: any[]): Promise<string> {
     symbol: currency,
     to: to,
     data: {
-      "appName":"arseeding",
-      "action":"payment",
-      "itemIds": ids
+      appName: 'arseeding',
+      action: 'payment',
+      itemIds: ids
     }
   })
   return result.everHash
@@ -55,7 +55,7 @@ function newEverpayByRSA (arJWK: any, arAddress: string): Everpay {
   const everpay = new Everpay({
     account: arAddress,
     chainType: 'arweave' as any,
-    arJWK: arJWK as any
+    arJWK: arJWK
   })
   return everpay
 }
