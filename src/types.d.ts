@@ -13,4 +13,5 @@ export interface Config {
     currency: string // USDC,ETH...
     arseedUrl:string // 'https://arseed.web3infura.io'
     apiKey?:string
+    needSeq?:boolean
 }

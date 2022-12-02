@@ -15,7 +15,7 @@ export const genAPI = async (windowEthereum: any): Promise<any> => {
 
   return {
     signer,
-    async sendAndPay (arseedingUrl: string, data: Buffer, tokenSymbol: string, opts: DataItemCreateOptions, debug?: boolean) {
+    async sendAndPay (arseedingUrl: string, data: Buffer, tokenSymbol: string, opts: DataItemCreateOptions, needSeq?: boolean, debug?: boolean) {
       const dataItem = createData(
         data,
         signer,
@@ -24,8 +24,14 @@ export const genAPI = async (windowEthereum: any): Promise<any> => {
       await dataItem.sign(signer)
 
       const api = axios.create({ baseURL: arseedingUrl })
+      let header = {
+        'Content-Type': 'application/octet-stream'
+      } as any
+      if(needSeq) {
+        header['Sort'] = 'true'
+      }
       const res = await api.post(`/bundle/tx/${tokenSymbol}`, dataItem.getRaw(), {
-        headers: { 'Content-Type': 'application/octet-stream' },
+        headers: header,
         maxBodyLength: Infinity
       })
       const order = res.data
@@ -93,7 +99,7 @@ export const genArweaveAPI = async (windowArweaveWallet: any): Promise<any> => {
 
   return {
     signer,
-    async sendAndPay (arseedingUrl: string, data: Buffer, tokenSymbol: string, opts: DataItemCreateOptions, debug?: boolean) {
+    async sendAndPay (arseedingUrl: string, data: Buffer, tokenSymbol: string, opts: DataItemCreateOptions, needSeq?: boolean, debug?: boolean) {
       const dataItem = createData(
         data,
         signer,
@@ -102,8 +108,14 @@ export const genArweaveAPI = async (windowArweaveWallet: any): Promise<any> => {
       await dataItem.sign(signer)
 
       const api = axios.create({ baseURL: arseedingUrl })
+      let header = {
+        'Content-Type': 'application/octet-stream'
+      } as any
+      if(needSeq) {
+        header['Sort'] = 'true'
+      }
       const res = await api.post(`/bundle/tx/${tokenSymbol}`, dataItem.getRaw(), {
-        headers: { 'Content-Type': 'application/octet-stream' },
+        headers: header,
         maxBodyLength: Infinity
       })
       const order = res.data
