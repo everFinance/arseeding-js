@@ -212,10 +212,10 @@ export const getDataByGW = async (arseedingUrl: string, itemId: string): Promise
   return res.data
 }
 
-export const submitByApikey = async (arseedingUrl: string, apiKey: string, data: Buffer, contentType: string, tags: { [key: string]: string }): Promise<any> => {
+export const submitByApikey = async (arseedingUrl: string, apiKey: string, currency: string, data: Buffer, contentType: string, tags: { [key: string]: string }): Promise<any> => {
   tags['Content-Type'] = contentType
   const api = axios.create({ baseURL: arseedingUrl })
-  const res = await api.post('/bundle/data', data, {
+  const res = await api.post(`/bundle/data/${currency}`, data, {
     headers: { 'X-API-KEY': apiKey },
     maxBodyLength: Infinity,
     params: tags
