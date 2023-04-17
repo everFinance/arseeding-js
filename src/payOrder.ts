@@ -28,7 +28,7 @@ async function payOrders (everpay: Everpay, orders: any[]): Promise<string> {
     fee = fee.plus(ord.fee)
   }
   const result = await everpay.transfer({
-    amount: fee.dividedBy(new BigNumber(10).pow(decimals)).toString(),
+    amount: fee.dividedBy(new BigNumber(10).pow(decimals.toString())).toString(),
     symbol: currency,
     to: to,
     data: {

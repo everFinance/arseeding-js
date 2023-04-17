@@ -94,7 +94,7 @@ export async function uploadFolder (path: string, privKey: string, arseedUrl: st
   totFee += +ord.fee
   decimals = ord.decimals
   const maniId = ord.itemId
-  const fee = new BigNumber(totFee).dividedBy(new BigNumber(10).pow(decimals)).toString()
+  const fee = new BigNumber(totFee).dividedBy(new BigNumber(10).pow(decimals.toString())).toString()
   ords.push(ord)
   return { ords, fee, maniId }
 }
