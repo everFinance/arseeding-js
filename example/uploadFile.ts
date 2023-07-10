@@ -1,9 +1,10 @@
 import { createAndSubmitItem } from '../src/submitOrder'
-import EthereumSigner from 'arseeding-arbundles/src/signing/chains/ethereumSigner'
+import { getTokenTagByEver } from '../src';
+import EthereumSigner from 'arseeding-arbundles-esm/src/signing/chains/ethereumSigner'
 // import ArweaveSigner from "arseeding-arbundles/src/signing/chains/ArweaveSigner";
 // import {readFileSync} from "fs";
 // import path from "path";
-import { Signer } from 'arseeding-arbundles/src/signing'
+import { Signer } from 'arseeding-arbundles-esm/src/signing'
 import {Config} from "../src/types";
 import {readFileSync} from "fs";
 
@@ -16,12 +17,12 @@ async function uploadFile (signer: Signer) {
         ]
     }
     const arseedingUrl = 'https://arseed.web3infra.dev'
-    const currency = 'VRT'
+    const currencyTags = await getTokenTagByEver('VRT')
     const cfg: Config =  {
         signer: signer,
         path:"",
         arseedUrl: arseedingUrl,
-        currency: currency
+        tag: currencyTags[0]
     }
     const data = Buffer.from('aa bb cc')
     const order = await createAndSubmitItem( data, ops, cfg)

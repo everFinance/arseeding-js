@@ -10,8 +10,8 @@ export const generateManifest = (config: { items: Map<string, string>, indexFile
     version: '0.1.0',
     paths: {}
   }
-  if ((indexFile as any) && items.has(indexFile as any)) {
-    manifest.index = { path: indexFile as any }
+  if (indexFile !== undefined && items.has(indexFile)) {
+    manifest.index = { path: indexFile }
   } else if (items.has('index.html')) {
     manifest.index = { path: 'index.html' }
   }
@@ -21,15 +21,15 @@ export const generateManifest = (config: { items: Map<string, string>, indexFile
   return manifest
 }
 
-export async function * walkpath (dir: string): any {
+export async function * walkpath (dir: string): AsyncGenerator<string> {
   for await (const d of await promises.opendir(dir)) {
     const entry = p.join(dir, d.name)
-    if (d.isDirectory()) yield * await walkpath(entry)
+    if (d.isDirectory()) yield * walkpath(entry)
     else if (d.isFile()) yield entry
   }
 }
 
-export async function checkPaths (path: string) {
+export async function checkPaths (path: string): Promise<string[]> {
   const files = []
   for await (const f of walkpath(path)) {
     files.push(f)

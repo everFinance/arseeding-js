@@ -2065,10 +2065,10 @@ array.prototype.flatmap@^1.3.1:
     es-abstract "^1.20.4"
     es-shim-unscopables "^1.0.0"
 
-arseeding-arbundles@0.6.25:
-  version "0.6.25"
-  resolved "https://registry.yarnpkg.com/arseeding-arbundles/-/arseeding-arbundles-0.6.25.tgz#7eb93f070d2d38e317fe8b8556983fd3a9f36f5f"
-  integrity sha512-D/n/2giUrWXfeudzgIoC2gNZniIdwJMSI7+hnXJ/3wYJuaAbKzgfhZVaH3156fVkwu4F8n7DTBMzL1XhB3dJrA==
+arseeding-arbundles-esm@0.0.3:
+  version "0.0.3"
+  resolved "https://registry.yarnpkg.com/arseeding-arbundles-esm/-/arseeding-arbundles-esm-0.0.3.tgz#ca7406fcdd76f341739366e552bccdb2675b3a11"
+  integrity sha512-IzqcP14YpqIDAXi5lq6k7E6aBZbZCazA6uIj/8FkdTK6eWVIUakyqOzH/cQv3sVPdQGQxy/tG9CJlT1YpXNZkQ==
   dependencies:
     "@noble/ed25519" "^1.6.1"
     "@randlabs/myalgo-connect" "^1.1.2"
@@ -3041,10 +3041,10 @@ eventemitter3@^4.0.0:
   resolved "https://registry.yarnpkg.com/eventemitter3/-/eventemitter3-4.0.7.tgz#2de9b68f6528d5644ef5c59526a1b4a07306169f"
   integrity sha512-8guHBZCwKnFhYdHr2ysuRWErTwhoN2X8XELRlrRwpmfeY2jjuUN4taQMsULKUVo1K4DvZl+0pgfyoysHxvmvEw==
 
-everpay@0.5.2:
-  version "0.5.2"
-  resolved "https://registry.yarnpkg.com/everpay/-/everpay-0.5.2.tgz#746a1f407b0f5dd83a6f4c9afc07bd54a5fbd5ff"
-  integrity sha512-mvokD2JssEbbrOeGa+ZFdKZocqUvvS4RlpL0n5jXOzZWz88CcYhpQ8RBrCfUbHWOCNNNDBFURH4ymIpvQIj0Ow==
+everpay@0.6.3:
+  version "0.6.3"
+  resolved "https://registry.yarnpkg.com/everpay/-/everpay-0.6.3.tgz#73dbe2179c7664a3854b4aae8de3ca650515974e"
+  integrity sha512-sTldxgpxxeYBOjnz0s1a6cfebBm89lS7G/yrBAoBaC8x1J7TRXfplEndm4ZQshdyjap8hYdUginoRL873tWYNQ==
   dependencies:
     "@types/lodash" "^4.14.180"
     arweave "^1.10.16"

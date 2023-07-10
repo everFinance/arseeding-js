@@ -2,14 +2,14 @@ import PromisePool from '@supercharge/promise-pool/dist'
 import mime from 'mime-types'
 import { checkPaths, generateManifest } from './manifest'
 import p from 'path'
-import EthereumSigner from 'arseeding-arbundles/src/signing/chains/ethereumSigner'
+import EthereumSigner from 'arseeding-arbundles-esm/src/signing/chains/ethereumSigner'
 import { readFileSync } from 'fs'
 import { Config } from './types'
 import { createAndSubmitItem } from './submitOrder'
 import { newEverpayByEcc, payOrders } from './payOrder'
 import BigNumber from 'bignumber.js'
 
-async function concurrentUploader (cfg: Config, files: string[], concurrency = 10): Promise<{ errors: any[], results: any[] }> {
+const concurrentUploader = async (cfg: Config, files: string[], concurrency = 10): Promise<{ errors: any[], results: any[] }> => {
   const errors: Error[] = []
   const results = await PromisePool
     .for(files)
@@ -23,15 +23,15 @@ async function concurrentUploader (cfg: Config, files: string[], concurrency = 1
         const relpath = p.relative(cfg.path, file)
         return { relpath, ord }
       } catch (e) {
-        throw file
+        throw new Error(file)
       }
-    }) as any
+    })
 
   return { errors, results: results.results }
 }
 
 // submit item for the file and not pay, return the order
-async function upload (file: string, cfg: Config): Promise<any> {
+const upload = async (file: string, cfg: Config): Promise<any> => {
   const data = readFileSync(file)
   const ops = {
     tags: [
@@ -43,11 +43,11 @@ async function upload (file: string, cfg: Config): Promise<any> {
 }
 
 // uploadFolder return all orders need to pay
-export async function uploadFolder (path: string, privKey: string, arseedUrl: string, currency: string, indexFile?: string, apiKey?: string): Promise<any> {
+export const uploadFolder = async (path: string, privKey: string, arseedUrl: string, tag: string, indexFile?: string, apiKey?: string): Promise<any> => {
   const cfg: Config = {
     signer: new EthereumSigner(privKey),
     arseedUrl: arseedUrl,
-    currency: currency,
+    tag: tag,
     path: path,
     apiKey: apiKey
   }
@@ -58,25 +58,33 @@ export async function uploadFolder (path: string, privKey: string, arseedUrl: st
   const items = new Map()
   // serial upload timeout files again
   if (errors.length > 0) {
-    const sleep = async (ms: number | undefined) => await new Promise(r => setTimeout(r, ms))
-    for (const [_, file] of errors.entries()) {
+    const sleep = async (ms: number | undefined): Promise<void> => {
+      return await new Promise((resolve) => {
+        setTimeout(() => {
+          resolve()
+        }, ms ?? 0)
+      })
+    }
+    for (const [, file] of errors.entries()) {
       try {
         const ord = await upload(file, cfg)
+        ord.tag = tag
         ords.push(ord)
         totFee += +ord.fee
         const relPath = p.relative(cfg.path, file)
         items.set(relPath, ord.itemId)
         await sleep(1500) // it's for upload all folder as much as possible, maybe set sleep longer
       } catch (e) {
-        console.log('aaaaa', e)
-        throw 'upload folder fail because network, try again later; err: ' + e
+        // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
+        throw new Error(`upload folder fail because network, try again later; err:${e} `)
       }
     }
   }
 
   let decimals = 0
-  for (const [_, obj] of results.entries()) {
+  for (const [, obj] of results.entries()) {
     items.set(obj.relpath, obj.ord.itemId)
+    obj.ord.tag = tag
     ords.push(obj.ord)
     totFee += +obj.ord.fee
   }
@@ -91,6 +99,7 @@ export async function uploadFolder (path: string, privKey: string, arseedUrl: st
     ]
   }
   const ord = await createAndSubmitItem(data, ops, cfg)
+  ord.tag = tag
   totFee += +ord.fee
   decimals = ord.decimals
   const maniId = ord.itemId
@@ -99,7 +108,7 @@ export async function uploadFolder (path: string, privKey: string, arseedUrl: st
   return { ords, fee, maniId }
 }
 
-export async function batchPayOrders (ords: any[], privKey: string): Promise<any> {
+export const batchPayOrders = async (ords: any[], privKey: string): Promise<any> => {
   const everPay = newEverpayByEcc(privKey)
   const res = []
   for (let i = 0; i < ords.length; i += 500) {
@@ -113,15 +122,15 @@ export async function batchPayOrders (ords: any[], privKey: string): Promise<any
     try {
       const everHash = await payOrders(everPay, partOrds)
       res.push(everHash)
-    } catch (e) {
-      throw e
+    } catch (e: any) {
+      throw new Error(e)
     }
   }
   return res
 }
 
-export async function uploadFolderAndPay (path: string, privKey: string, url: string, currency: string, indexFile?: string): Promise<any> {
-  const { ords, fee, maniId } = await uploadFolder(path, privKey, url, currency)
-  const everHash =  await batchPayOrders(ords, privKey)
-    return {fee, maniId, everHash}
+export const uploadFolderAndPay = async (path: string, privKey: string, url: string, tag: string, indexFile?: string): Promise<any> => {
+  const { ords, fee, maniId } = await uploadFolder(path, privKey, url, tag)
+  const everHash = await batchPayOrders(ords, privKey)
+  return { fee, maniId, everHash }
 }
