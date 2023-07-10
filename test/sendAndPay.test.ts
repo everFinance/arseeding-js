@@ -1,5 +1,5 @@
 import { genNodeAPI, getTokenTagByEver } from '../src/index'
-import { Bundle } from 'arseeding-arbundles-esm'
+import { Bundle } from 'arseeding-arbundles'
 import { readFileSync } from 'fs'
 
 test('send and pay', async () => {

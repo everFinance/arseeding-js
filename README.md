@@ -39,7 +39,7 @@ instance.sendAndPay('https://arseed.web3infra.dev', Buffer.from('aa bb cc'), pay
 import {batchPayOrders, uploadFolder, uploadFolderAndPay} from "arseeding-js/cjs/uploadFolder";
 
 const path = './src/nft'
-const priv = '9d8bdd0d2f1e73dffe9252ee6f38325b7e195669541f76559760ef615a588be8'
+const priv = 'PRIVATE KEY'
 const url = 'https://arseed.web3infra.dev'
 const tokenTags = await getTokenTagByEver('usdc')  // everpay supported all tokens
 const payCurrencyTag = tokenTags[0]

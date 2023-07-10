@@ -1,6 +1,6 @@
-import { DataItemCreateOptions } from 'arseeding-arbundles-esm'
-import { InjectedArweaveSigner, InjectedEthereumSigner, Signer } from 'arseeding-arbundles-esm/src/signing'
-import EthereumSigner from 'arseeding-arbundles-esm/src/signing/chains/ethereumSigner'
+import { DataItemCreateOptions } from 'arseeding-arbundles'
+import { InjectedArweaveSigner, InjectedEthereumSigner, Signer } from 'arseeding-arbundles/src/signing'
+import EthereumSigner from 'arseeding-arbundles/src/signing/chains/ethereumSigner'
 export interface Manifest {
   manifest: string
   version: string
