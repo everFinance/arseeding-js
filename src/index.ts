@@ -9,7 +9,7 @@ import { GenAPIReturn, GenArweaveAPIReturn, GenNodeAPIReturn } from './types'
 import ArweaveSigner from 'arseeding-arbundles-test/src/signing/chains/ArweaveSigner'
 
 export const genAPI = async (windowEthereum: any): Promise<GenAPIReturn> => {
-  await windowEthereum.enable()
+  await windowEthereum.request({ method: 'eth_requestAccounts' })
   const provider = new providers.Web3Provider(windowEthereum)
   await provider._ready()
   const signer = new InjectedEthereumSigner(provider)
