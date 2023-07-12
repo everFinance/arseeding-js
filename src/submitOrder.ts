@@ -10,7 +10,7 @@ export {
 
 async function createAndSubmitItem (data: Buffer, opts: DataItemCreateOptions, cfg: Config): Promise<any> {
   const dataItem = await createAndSignItem(cfg.signer, data, opts)
-  return await submit(cfg.arseedUrl, dataItem, cfg.currency, cfg.apiKey, cfg.needSeq)
+  return await submit(cfg.arseedUrl, dataItem, cfg.tag, cfg.apiKey, cfg.needSeq)
 }
 
 async function createAndSignItem (signer: Signer, data: Buffer, opts: DataItemCreateOptions): Promise<DataItem> {
@@ -19,20 +19,21 @@ async function createAndSignItem (signer: Signer, data: Buffer, opts: DataItemCr
   return dataItem
 }
 
-async function submit (arseedingUrl: string, dataItem: DataItem, tokenSymbol: string, apiKey?: string, needSeq?: boolean): Promise<any> {
+async function submit (arseedingUrl: string, dataItem: DataItem, tag: string, apiKey?: string, needSeq?: boolean): Promise<any> {
   const api = axios.create({ baseURL: arseedingUrl })
-  let header = {
+  const header = {
     'Content-Type': 'application/octet-stream'
   } as any
-  if (apiKey != null) {
+  if (apiKey !== undefined && apiKey.length > 0) {
     header['X-API-KEY'] = apiKey
   }
-  if (needSeq) {
-    header['Sort'] = 'true'
+  if (needSeq !== undefined && needSeq) {
+    header.Sort = 'true'
   }
+  const tokenSymbol = tag.split('-')[1]
   const res = await api.post(`/bundle/tx/${tokenSymbol}`, dataItem.getRaw(), {
     headers: header,
     maxBodyLength: Infinity
   })
-  return res.data
+  return { ...res.data, tag }
 }

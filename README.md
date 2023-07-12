@@ -6,16 +6,17 @@ npm i arseeding-js
 ```
 ### example
 ```ts
-import { genAPI } from 'arseeding-js'
+import { genAPI, getTokenTagByEver } from 'arseeding-js'
 const instance = await genAPI(window.ethereum)
 
 const arseedUrl = 'https://arseed.web3infra.dev'
 const data = Buffer.from('........')
-const payCurrency = 'usdc' // everpay supported all tokens
+const tokenTags = await getTokenTagByEver('usdc')  // everpay supported all tokens
+const payCurrencyTag = tokenTags[0]
 const ops = {
     tags: [{name: "Content-Type",value:'data type'}]
 }
-const res = await instance.sendAndPay(arseedUrl, data, payCurrency, ops)
+const res = await instance.sendAndPay(arseedUrl, data, payCurrencyTag, ops)
 console.log('res',res)
 
 // review data
@@ -27,8 +28,10 @@ curl --location --request GET 'https://arseed.web3infra.dev/{{res.order.itemId}}
 import { genNodeAPI } from 'arseeding-js'
 
 const instance = await genNodeAPI('YOUR PRIVATE KEY')
+const tokenTags = await getTokenTagByEver('usdc')  // everpay supported all tokens
+const payCurrencyTag = tokenTags[0]
 
-instance.sendAndPay('https://arseed.web3infra.dev', Buffer.from('aa bb cc'), 'usdc', {})
+instance.sendAndPay('https://arseed.web3infra.dev', Buffer.from('aa bb cc'), payCurrencyTag, {})
 ```
 
 ### example3 - upload folder
@@ -36,15 +39,16 @@ instance.sendAndPay('https://arseed.web3infra.dev', Buffer.from('aa bb cc'), 'us
 import {batchPayOrders, uploadFolder, uploadFolderAndPay} from "arseeding-js/cjs/uploadFolder";
 
 const path = './src/nft'
-const priv = '9d8bdd0d2f1e73dffe9252ee6f38325b7e195669541f76559760ef615a588be8'
+const priv = 'PRIVATE KEY'
 const url = 'https://arseed.web3infra.dev'
-const currency = 'USDC' // or ETH,BNB etc.
+const tokenTags = await getTokenTagByEver('usdc')  // everpay supported all tokens
+const payCurrencyTag = tokenTags[0]
+const indexFile = ''
 
-
-uploadFolderAndPay(path,priv,url,'USDC').catch((e)=>{
-    console.log(e)
-}).then((res)=>{
-    console.log(res.maniId)
+uploadFolderAndPay(path,priv,url,payCurrencyTag, indexFile).then((res)=>{
+  console.log(res)
+}).catch((err)=>{
+  console.log(err)
 })
 
 // review manifest Data

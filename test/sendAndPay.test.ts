@@ -1,11 +1,11 @@
-import { genNodeAPI } from '../src/index'
+import { genNodeAPI, getTokenTagByEver } from '../src/index'
 import { Bundle } from 'arseeding-arbundles'
 import { readFileSync } from 'fs'
 
 test('send and pay', async () => {
-  const instance = genNodeAPI('94c97d4cc865d77afaf2d64147f7c067890e1485eb5d8e2c15cc0b7528a08b47')
-
-  return instance.sendAndPay('https://arseed.web3infra.dev', Buffer.from('aa bb cc'), 'vrt', {}, true)
+  const instance = genNodeAPI('')
+  const tags = await getTokenTagByEver('usdc') // 获取 usdc 的所有 tag
+  return await instance.sendAndPay('https://arseed.web3infra.dev', Buffer.from('aa bb cc'), tags[0], {}, false)
     .then((result: any) => {
       console.log('result', result)
       expect(result.order).toBeTruthy()

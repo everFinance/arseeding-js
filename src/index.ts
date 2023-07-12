@@ -1,13 +1,15 @@
 import { Wallet, providers } from 'ethers'
-import Everpay from 'everpay'
+import Everpay, { ChainType } from 'everpay'
 import { createData, DataItemCreateOptions } from 'arseeding-arbundles'
 import EthereumSigner from 'arseeding-arbundles/src/signing/chains/ethereumSigner'
 import axios from 'axios'
 import { payOrder } from './payOrder'
 import { InjectedEthereumSigner, InjectedArweaveSigner } from 'arseeding-arbundles/src/signing'
+import { GenAPIReturn, GenArweaveAPIReturn, GenNodeAPIReturn } from './types'
+import ArweaveSigner from 'arseeding-arbundles/src/signing/chains/ArweaveSigner'
 
-export const genAPI = async (windowEthereum: any): Promise<any> => {
-  await windowEthereum.enable()
+export const genAPI = async (windowEthereum: any): Promise<GenAPIReturn> => {
+  await windowEthereum.request({ method: 'eth_requestAccounts' })
   const provider = new providers.Web3Provider(windowEthereum)
   await provider._ready()
   const signer = new InjectedEthereumSigner(provider)
@@ -15,7 +17,7 @@ export const genAPI = async (windowEthereum: any): Promise<any> => {
 
   return {
     signer,
-    async sendAndPay (arseedingUrl: string, data: Buffer, tokenSymbol: string, opts: DataItemCreateOptions, needSeq?: boolean, debug?: boolean) {
+    async sendAndPay (arseedingUrl: string, data: Buffer, tag: string, opts: DataItemCreateOptions, needSeq?: boolean, debug?: boolean) {
       const dataItem = createData(
         data,
         signer,
@@ -24,17 +26,18 @@ export const genAPI = async (windowEthereum: any): Promise<any> => {
       await dataItem.sign(signer)
 
       const api = axios.create({ baseURL: arseedingUrl })
-      let header = {
+      const header = {
         'Content-Type': 'application/octet-stream'
       } as any
-      if(needSeq) {
-        header['Sort'] = 'true'
+      if (needSeq !== undefined && needSeq) {
+        header.Sort = 'true'
       }
+      const tokenSymbol = tag.split('-')[1]
       const res = await api.post(`/bundle/tx/${tokenSymbol}`, dataItem.getRaw(), {
         headers: header,
         maxBodyLength: Infinity
       })
-      const order = res.data
+      const order = { ...res.data, tag }
       const { fee } = order
       if (+fee > 0) {
         const accounts = await provider.listAccounts()
@@ -43,7 +46,7 @@ export const genAPI = async (windowEthereum: any): Promise<any> => {
           debug: debug,
           account: account,
           ethConnectedSigner: provider.getSigner(),
-          chainType: 'ethereum' as any
+          chainType: 'ethereum' as ChainType
         })
         const everHash = await payOrder(everpay, order)
 
@@ -86,7 +89,7 @@ const checkArPermissions = async (windowArweaveWallet: any, permissions: string[
   }
 }
 
-export const genArweaveAPI = async (windowArweaveWallet: any): Promise<any> => {
+export const genArweaveAPI = async (windowArweaveWallet: any): Promise<GenArweaveAPIReturn> => {
   await checkArPermissions(windowArweaveWallet, [
     'ACCESS_ADDRESS',
     'ACCESS_ALL_ADDRESSES',
@@ -99,7 +102,7 @@ export const genArweaveAPI = async (windowArweaveWallet: any): Promise<any> => {
 
   return {
     signer,
-    async sendAndPay (arseedingUrl: string, data: Buffer, tokenSymbol: string, opts: DataItemCreateOptions, needSeq?: boolean, debug?: boolean) {
+    async sendAndPay (arseedingUrl: string, data: Buffer, tag: string, opts: DataItemCreateOptions, needSeq?: boolean, debug?: boolean) {
       const dataItem = createData(
         data,
         signer,
@@ -108,17 +111,18 @@ export const genArweaveAPI = async (windowArweaveWallet: any): Promise<any> => {
       await dataItem.sign(signer)
 
       const api = axios.create({ baseURL: arseedingUrl })
-      let header = {
+      const header = {
         'Content-Type': 'application/octet-stream'
       } as any
-      if(needSeq) {
-        header['Sort'] = 'true'
+      if (needSeq !== undefined && needSeq) {
+        header.Sort = 'true'
       }
+      const tokenSymbol = tag.split('-')[1]
       const res = await api.post(`/bundle/tx/${tokenSymbol}`, dataItem.getRaw(), {
         headers: header,
         maxBodyLength: Infinity
       })
-      const order = res.data
+      const order = { ...res.data, tag }
       const { fee } = order
       if (+fee > 0) {
         const account = await windowArweaveWallet.getActiveAddress()
@@ -126,7 +130,7 @@ export const genArweaveAPI = async (windowArweaveWallet: any): Promise<any> => {
           debug: debug,
           account: account,
           arJWK: 'use_wallet',
-          chainType: 'arweave' as any
+          chainType: 'arweave' as ChainType
         })
         const everHash = await payOrder(everpay, order)
 
@@ -143,13 +147,13 @@ export const genArweaveAPI = async (windowArweaveWallet: any): Promise<any> => {
   }
 }
 
-export const genNodeAPI = (pk: string): any => {
+export const genNodeAPI = (pk: string): GenNodeAPIReturn => {
   const signer = new EthereumSigner(pk)
   const ethConnectedSigner = new Wallet(pk)
 
   return {
     signer,
-    async sendAndPay (arseedingUrl: string, data: Buffer, tokenSymbol: string, opts: DataItemCreateOptions, debug?: boolean) {
+    async sendAndPay (arseedingUrl: string, data: Buffer, tag: string, opts: DataItemCreateOptions, debug?: boolean) {
       const dataItem = createData(
         data,
         signer,
@@ -158,11 +162,12 @@ export const genNodeAPI = (pk: string): any => {
       await dataItem.sign(signer)
 
       const api = axios.create({ baseURL: arseedingUrl })
+      const tokenSymbol = tag.split('-')[1]
       const res = await api.post(`/bundle/tx/${tokenSymbol}`, dataItem.getRaw(), {
         headers: { 'Content-Type': 'application/octet-stream' },
         maxBodyLength: Infinity
       })
-      const order = res.data
+      const order = { ...res.data, tag }
       const { fee } = order
       if (+fee > 0) {
         const account = ethConnectedSigner.address
@@ -170,7 +175,7 @@ export const genNodeAPI = (pk: string): any => {
           debug: debug,
           account: account,
           ethConnectedSigner: ethConnectedSigner,
-          chainType: 'ethereum' as any
+          chainType: 'ethereum' as ChainType
         })
 
         const everHash = await payOrder(everpay, order)
@@ -212,7 +217,8 @@ export const getDataByGW = async (arseedingUrl: string, itemId: string): Promise
   return res.data
 }
 
-export const submitByApikey = async (arseedingUrl: string, apiKey: string, currency: string, data: Buffer, contentType: string, tags: { [key: string]: string }): Promise<any> => {
+export const submitByApikey = async (arseedingUrl: string, apiKey: string, tag: string, data: Buffer, contentType: string, tags: { [key: string]: string }): Promise<any> => {
+  const currency = tag.split('-')[1]
   tags['Content-Type'] = contentType
   const api = axios.create({ baseURL: arseedingUrl })
   const res = await api.post(`/bundle/data/${currency}`, data, {
@@ -222,3 +228,17 @@ export const submitByApikey = async (arseedingUrl: string, apiKey: string, curre
   })
   return res.data
 }
+export const getTokenTagByEver = async (symbol: string, debug?: boolean): Promise<string[]> => {
+  const info = await new Everpay({
+    debug: debug
+  }).info()
+
+  const tags = info.tokenList.map((item) => {
+    if (item.symbol.toLowerCase() === symbol.toLowerCase()) {
+      return item.tag
+    }
+    return undefined
+  }).filter(Boolean) as string[]
+  return tags
+}
+export { EthereumSigner, ArweaveSigner, InjectedArweaveSigner, InjectedEthereumSigner }
