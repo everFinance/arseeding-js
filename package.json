@@ -40,7 +40,7 @@
   },
   "dependencies": {
     "@supercharge/promise-pool": "^2.3.2",
-    "arseeding-arbundles-test": "0.0.1",
+    "arseeding-arbundles": "0.6.25",
     "axios": "^0.21.1",
     "bignumber.js": "^9.0.2",
     "crypto-browserify": "^3.12.0",

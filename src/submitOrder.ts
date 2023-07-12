@@ -1,6 +1,6 @@
-import { createData, DataItemCreateOptions } from 'arseeding-arbundles-test'
-import { Signer } from 'arseeding-arbundles-test/src/signing'
-import DataItem from 'arseeding-arbundles-test/src/DataItem'
+import { createData, DataItemCreateOptions } from 'arseeding-arbundles'
+import { Signer } from 'arseeding-arbundles/src/signing'
+import DataItem from 'arseeding-arbundles/src/DataItem'
 import axios from 'axios'
 import { Config } from './types'
 

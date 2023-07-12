@@ -1,12 +1,12 @@
 import { Wallet, providers } from 'ethers'
 import Everpay, { ChainType } from 'everpay'
-import { createData, DataItemCreateOptions } from 'arseeding-arbundles-test'
-import EthereumSigner from 'arseeding-arbundles-test/src/signing/chains/ethereumSigner'
+import { createData, DataItemCreateOptions } from 'arseeding-arbundles'
+import EthereumSigner from 'arseeding-arbundles/src/signing/chains/ethereumSigner'
 import axios from 'axios'
 import { payOrder } from './payOrder'
-import { InjectedEthereumSigner, InjectedArweaveSigner } from 'arseeding-arbundles-test/src/signing'
+import { InjectedEthereumSigner, InjectedArweaveSigner } from 'arseeding-arbundles/src/signing'
 import { GenAPIReturn, GenArweaveAPIReturn, GenNodeAPIReturn } from './types'
-import ArweaveSigner from 'arseeding-arbundles-test/src/signing/chains/ArweaveSigner'
+import ArweaveSigner from 'arseeding-arbundles/src/signing/chains/ArweaveSigner'
 
 export const genAPI = async (windowEthereum: any): Promise<GenAPIReturn> => {
   await windowEthereum.request({ method: 'eth_requestAccounts' })
