@@ -1,6 +1,6 @@
 {
   "name": "arseeding-js",
-  "version": "0.0.28",
+  "version": "0.0.29",
   "repository": "git@xaber.github.com:everFinance/arseeding-js.git",
   "author": "xaber <xaber.twt@gmail.com>",
   "license": "MIT",
@@ -40,13 +40,13 @@
   },
   "dependencies": {
     "@supercharge/promise-pool": "^2.3.2",
-    "arseeding-arbundles": "0.6.25",
+    "arseeding-arbundles": "0.6.27",
     "axios": "^0.21.1",
     "bignumber.js": "^9.0.2",
     "crypto-browserify": "^3.12.0",
     "crypto-js": "^4.1.1",
     "ethers": "^5.7.1",
-    "everpay": "0.6.3",
+    "everpay": "0.6.6",
     "lodash": "^4.17.21",
     "mime-types": "^2.1.35"
   }
