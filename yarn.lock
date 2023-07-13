@@ -2146,9 +2146,9 @@ available-typed-arrays@^1.0.5:
   resolved "https://registry.yarnpkg.com/available-typed-arrays/-/available-typed-arrays-1.0.5.tgz#92f95616501069d07d10edb2fc37d3e1c65123b7"
   integrity sha512-DMD0KiN46eipeziST1LPP/STfDU0sufISXmjSgvVsoU2tqxctQeASejWcfNtxYKqETM1UxQ8sp2OrSBWpHY6sw==
 
-"avsc@git+https://github.com/Bundlr-Network/avsc.git#csp-fixes":
+"avsc@https://github.com/Bundlr-Network/avsc#csp-fixes":
   version "5.4.7"
-  resolved "git+https://github.com/Bundlr-Network/avsc.git#a730cc8018b79e114b6a3381bbb57760a24c6cef"
+  resolved "https://github.com/Bundlr-Network/avsc#a730cc8018b79e114b6a3381bbb57760a24c6cef"
 
 axios@^0.21.1, axios@^0.21.3:
   version "0.21.4"
@@ -3186,10 +3186,10 @@ eventemitter3@^4.0.0:
   resolved "https://registry.yarnpkg.com/eventemitter3/-/eventemitter3-4.0.7.tgz#2de9b68f6528d5644ef5c59526a1b4a07306169f"
   integrity sha512-8guHBZCwKnFhYdHr2ysuRWErTwhoN2X8XELRlrRwpmfeY2jjuUN4taQMsULKUVo1K4DvZl+0pgfyoysHxvmvEw==
 
-everpay@0.6.6:
-  version "0.6.6"
-  resolved "https://registry.yarnpkg.com/everpay/-/everpay-0.6.6.tgz#52a3c5bee02742ef250ecc4a77c46a0180d7678c"
-  integrity sha512-S+bui4b7MiFVUhPRVUl++X+iWwX0lBTmPujpYWXLU4Siq7z/98fLCqTL+Z/tmT3hsbQrbkzOd+3Jxign5gm97g==
+everpay@0.6.7:
+  version "0.6.7"
+  resolved "https://registry.yarnpkg.com/everpay/-/everpay-0.6.7.tgz#72e9dc9fd5666cfac2921c2e45bce7c0b3918d71"
+  integrity sha512-MC2/zDs/BAUYCvXQ5X2QVkUh1NsoOhXxgYpUUtLxffhrzkpeKZcwYHJ79YaSOdEME4RfB806fqNjnD76HKko5A==
   dependencies:
     "@types/lodash" "^4.14.180"
     arweave "=1.11.8"

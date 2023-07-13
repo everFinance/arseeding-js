@@ -1,6 +1,6 @@
 {
   "name": "arseeding-js",
-  "version": "0.0.29",
+  "version": "0.0.30",
   "repository": "git@xaber.github.com:everFinance/arseeding-js.git",
   "author": "xaber <xaber.twt@gmail.com>",
   "license": "MIT",
@@ -46,7 +46,7 @@
     "crypto-browserify": "^3.12.0",
     "crypto-js": "^4.1.1",
     "ethers": "^5.7.1",
-    "everpay": "0.6.6",
+    "everpay": "0.6.7",
     "lodash": "^4.17.21",
     "mime-types": "^2.1.35"
   }
